@@ -1,0 +1,4 @@
+github.com/Necrys/serial v0.0.1 h1:1l6zkLAv86qJRXZ5bjq/XjJlUrwzVaHJ9yB70PYJ/SE=
+github.com/Necrys/serial v0.0.1/go.mod h1:94FaqNfVtbv1cP0m1xKPJcYnZq9Djvacx5/rb5l0VxE=
+golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae h1:Ih9Yo4hSPImZOpfGuA4bR/ORKTAbhZo2AbWNRCnevdo=
+golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
