@@ -77,10 +77,18 @@ func ( s *sensor )SetMeasurementRange( max uint32 ) error {
 		return err
 	}
 
+  var read = 0
   var resp = []byte { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-  _, err := s.port.Read( resp )
-  if err != nil {
-    return err
+  
+  for read < 9 {
+    n, err := s.port.Read( resp[ read: ] )
+    if err != nil {
+      return err
+    }
+
+    if s.cfg.Debug {
+      log.Println( "SetMeasurementRange, read ", n, " bytes" )
+    }
   }
 
   if s.cfg.Debug {
@@ -120,10 +128,18 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
 		return 0, err
 	}
 
+  var read = 0
   var resp = []byte { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-  _, err := s.port.Read( resp )
-  if err != nil {
-    return 0, err
+
+  for read != 9 {
+    n, err := s.port.Read( resp[ read: ] )
+    if err != nil {
+      return 0, err
+    }
+
+    if s.cfg.Debug {
+      log.Println( "SetMeasurementRange, read ", n, " bytes" )
+    }
   }
 
   if s.cfg.Debug {
