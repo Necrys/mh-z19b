@@ -104,7 +104,7 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
   crc = 255 - crc
   crc += 1
 
-  if resp[ 0 ] != 0xff || resp[ 1 ] != 0x99 || resp[ 8 ] != crc {
+  if resp[ 0 ] != 0xff || resp[ 1 ] != 0x86 || resp[ 8 ] != crc {
     return 0, errors.New( "Bad response" )
   }
   
