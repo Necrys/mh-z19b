@@ -89,6 +89,8 @@ func ( s *sensor )SetMeasurementRange( max uint32 ) error {
     if s.cfg.Debug {
       log.Println( "SetMeasurementRange, read ", n, " bytes" )
     }
+    
+    read += n
   }
 
   if s.cfg.Debug {
@@ -140,6 +142,8 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
     if s.cfg.Debug {
       log.Println( "SetMeasurementRange, read ", n, " bytes" )
     }
+    
+    read += n
   }
 
   if s.cfg.Debug {
