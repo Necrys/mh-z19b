@@ -115,6 +115,7 @@ func ( s *sensor )SetMeasurementRange( max uint32 ) error {
 func ( s *sensor )GetMeasurement()( uint32, error ) {
   // 0xFF,0x01,0x86,0x00,0x00,0x00,0x00,0x00,0x79
   var cmd = []byte { 0xff, 0x01, 0x86, 0x00, 0x00, 0x00, 0x00, 0x00, 0x79 }
+  cmd[ 8 ] = 0
   for i := 1; i < 8; i++ {
     cmd[ 8 ] = cmd[ 8 ] + cmd[ i ]
   }
@@ -122,8 +123,8 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
   cmd[ 8 ] = cmd[ 8 ] + 1
 
   if s.cfg.Debug {
-    log.Println( "SetMeasurementRange, cmd{ %x, %x, %x, %x, %x, %x, %x, %x, %x }",
-      cmd[ 0 ], cmd[ 1 ], cmd[ 2 ], cmd[ 3 ], cmd[ 4 ], cmd[ 5 ], cmd[ 6 ], cmd[ 7 ], cmd[ 8 ] )
+    log.Println( "GetMeasurement, cmd{ ",
+      cmd[ 0 ], cmd[ 1 ], cmd[ 2 ], cmd[ 3 ], cmd[ 4 ], cmd[ 5 ], cmd[ 6 ], cmd[ 7 ], cmd[ 8 ], " }" )
   }
 
 	if _, err := s.port.Write( cmd ); err != nil {
@@ -140,15 +141,15 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
     }
 
     if s.cfg.Debug {
-      log.Println( "SetMeasurementRange, read ", n, " bytes" )
+      log.Println( "GetMeasurement, read ", n, " bytes" )
     }
     
     read += n
   }
 
   if s.cfg.Debug {
-    log.Println( "SetMeasurementRange, resp{ %x, %x, %x, %x, %x, %x, %x, %x, %x }",
-      resp[ 0 ], resp[ 1 ], resp[ 2 ], resp[ 3 ], resp[ 4 ], resp[ 5 ], resp[ 6 ], resp[ 7 ], resp[ 8 ] )
+    log.Println( "GetMeasurement, resp{ ",
+      resp[ 0 ], resp[ 1 ], resp[ 2 ], resp[ 3 ], resp[ 4 ], resp[ 5 ], resp[ 6 ], resp[ 7 ], resp[ 8 ], " }" )
   }
 
   var crc = byte( 0x00 )
