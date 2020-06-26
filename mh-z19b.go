@@ -3,11 +3,13 @@ package mhz19b
 import(
   "github.com/Necrys/serial"
   "errors"
+  "log"
 )
 
 type Config struct {
   Address          string
   MeasurementRange uint32
+  Debug            bool
 }
 
 type Sensor interface {
@@ -29,15 +31,27 @@ func NewSensor( c *Config )( Sensor, error ) {
     s.cfg.MeasurementRange = 5000
   }
 
+  if s.cfg.Debug {
+    log.Println( "NewSensor, config{ Address: \"%s\", MeasurementRange: %d, Debug: %v }",
+      s.cfg.Address, s.cfg.MeasurementRange, s.cfg.Debug )
+  }
+
   sc := &serial.Config{ Name: s.cfg.Address, Baud: 9600 }
   port, err := serial.OpenPort( sc )
   if err != nil {
+    if s.cfg.Debug {
+      log.Println( err )
+    }
     return nil, err
   }
 
   s.port = port
 
   s.SetMeasurementRange( s.cfg.MeasurementRange )
+
+  if s.cfg.Debug {
+    log.Println( "Sensor successfully created" )
+  }
 
   return s, nil
 }
@@ -54,6 +68,11 @@ func ( s *sensor )SetMeasurementRange( max uint32 ) error {
   cmd[ 8 ] = 255 - cmd[ 8 ]
   cmd[ 8 ] = cmd[ 8 ] + 1
 
+  if s.cfg.Debug {
+    log.Println( "SetMeasurementRange, cmd{ %x, %x, %x, %x, %x, %x, %x, %x, %x }",
+      cmd[ 0 ], cmd[ 1 ], cmd[ 2 ], cmd[ 3 ], cmd[ 4 ], cmd[ 5 ], cmd[ 6 ], cmd[ 7 ], cmd[ 8 ] )
+  }
+
 	if _, err := s.port.Write( cmd ); err != nil {
 		return err
 	}
@@ -62,6 +81,11 @@ func ( s *sensor )SetMeasurementRange( max uint32 ) error {
   _, err := s.port.Read( resp )
   if err != nil {
     return err
+  }
+
+  if s.cfg.Debug {
+    log.Println( "SetMeasurementRange, resp{ %x, %x, %x, %x, %x, %x, %x, %x, %x }",
+      resp[ 0 ], resp[ 1 ], resp[ 2 ], resp[ 3 ], resp[ 4 ], resp[ 5 ], resp[ 6 ], resp[ 7 ], resp[ 8 ] )
   }
 
   var crc = byte( 0x00 )
@@ -87,6 +111,11 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
   cmd[ 8 ] = 255 - cmd[ 8 ]
   cmd[ 8 ] = cmd[ 8 ] + 1
 
+  if s.cfg.Debug {
+    log.Println( "SetMeasurementRange, cmd{ %x, %x, %x, %x, %x, %x, %x, %x, %x }",
+      cmd[ 0 ], cmd[ 1 ], cmd[ 2 ], cmd[ 3 ], cmd[ 4 ], cmd[ 5 ], cmd[ 6 ], cmd[ 7 ], cmd[ 8 ] )
+  }
+
 	if _, err := s.port.Write( cmd ); err != nil {
 		return 0, err
 	}
@@ -95,6 +124,11 @@ func ( s *sensor )GetMeasurement()( uint32, error ) {
   _, err := s.port.Read( resp )
   if err != nil {
     return 0, err
+  }
+
+  if s.cfg.Debug {
+    log.Println( "SetMeasurementRange, resp{ %x, %x, %x, %x, %x, %x, %x, %x, %x }",
+      resp[ 0 ], resp[ 1 ], resp[ 2 ], resp[ 3 ], resp[ 4 ], resp[ 5 ], resp[ 6 ], resp[ 7 ], resp[ 8 ] )
   }
 
   var crc = byte( 0x00 )
